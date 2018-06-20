@@ -4,7 +4,8 @@ import {
   ElementRef, 
   OnInit, 
   HostListener, 
-  HostBinding 
+  HostBinding, 
+  Input
 } from '@angular/core';
 
 @Directive({
@@ -14,10 +15,10 @@ export class BetterHighlightDirective implements OnInit {
   constructor(private renderer: Renderer2, 
     private elementRef: ElementRef) { }
 
-  ngOnInit() {
-    // this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue');
-    // forth argument is optional. We can set !important in that argument
-  }
+  // ngOnInit() {
+  //   // this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', 'blue');
+  //   // forth argument is optional. We can set !important in that argument
+  // }
 
   /* HostListener example */
   // @HostListener('mouseenter') mouseEnter() { // HostListener decorator is added to a method we want to execute on an event
@@ -34,19 +35,39 @@ export class BetterHighlightDirective implements OnInit {
   
 
   /* HostBinding example */
-  @HostBinding('style.backgroundColor') backgroundColor: string = 'transparent';
-  // bind to host property using HostBinding
-  // define in string
-  // camelCase property name because we are accessing DOM property not CSS
+  // @HostBinding('style.backgroundColor') backgroundColor: string = 'transparent';
+  // // bind to host property using HostBinding
+  // // define in string
+  // // camelCase property name because we are accessing DOM property not CSS
+
+  // @HostListener('mouseenter') mouseEnter() { 
+  //   this.backgroundColor = 'blue';
+  // }
+
+  // @HostListener('mouseleave') mouseOut() {
+  //   this.backgroundColor = 'transparent';
+  // }
+  /* End HostBinding example */
+  
+
+  /* Binding to directive property example */
+  @Input() defaultColor: string = 'transparent';
+  @Input('betterHighlight') highlightColor: string = 'blue';
+
+  @HostBinding('style.backgroundColor') backgroundColor: string = this.defaultColor;
+
+  ngOnInit() {
+    this.backgroundColor = this.defaultColor;
+  }
 
   @HostListener('mouseenter') mouseEnter() { 
-    this.backgroundColor = 'blue';
+    this.backgroundColor = this.highlightColor;
   }
 
   @HostListener('mouseleave') mouseOut() {
-    this.backgroundColor = 'transparent';
+    this.backgroundColor = this.defaultColor;
   }
-  /* End HostBinding example */
+  /* End Binding to directive property example */  
   
 
 }
